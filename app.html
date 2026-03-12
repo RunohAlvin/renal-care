@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RenalCare Premium - Dialysis Booking</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState } = React;
+
+    // Lucide React icons as simple SVG components
+    const Calendar = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="16" y1="2" x2="16" y2="6"></line>
+        <line x1="8" y1="2" x2="8" y2="6"></line>
+        <line x1="3" y1="10" x2="21" y2="10"></line>
+      </svg>
+    );
+
+    const Clock = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="12" cy="12" r="10"></circle>
+        <polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+    );
+
+    const Heart = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+      </svg>
+    );
+
+    const Shield = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+      </svg>
+    );
+
+    const Star = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+      </svg>
+    );
+
+    const User = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+    );
+
+    const Phone = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+      </svg>
+    );
+
+    const Mail = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+        <polyline points="22,6 12,13 2,6"></polyline>
+      </svg>
+    );
+
+    const MapPin = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+        <circle cx="12" cy="10" r="3"></circle>
+      </svg>
+    );
+
+    const CheckCircle = () => (
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    );
+
+    const DialysisBookingApp = () => {
+      const [currentView, setCurrentView] = useState('home');
+      const [selectedService, setSelectedService] = useState(null);
+      const [selectedCategory, setSelectedCategory] = useState('all');
+      const [bookingData, setBookingData] = useState({
+        date: '',
+        time: '',
+        service: ''
+      });
+
+      const services = [
+        {
+          id: 'premium',
+          name: 'Premium Dialysis',
+          price: 'KES 17,000',
+          category: 'dialysis',
+          features: [
+            'Dedicated nurse assignment',
+            'Home pickup & drop-off',
+            'Personalized treatment plan',
+            'Post-session follow-up calls',
+            'Dietary counseling',
+            'Flexible scheduling',
+            '24/7 WhatsApp support',
+            'Priority booking'
+          ],
+          color: 'from-blue-600 to-blue-800'
+        },
+        {
+          id: 'standard',
+          name: 'Standard Dialysis',
+          price: 'KES 14,000',
+          category: 'dialysis',
+          features: [
+            'Professional nursing staff',
+            'Quality dialysis treatment',
+            'Clean, comfortable environment',
+            'Flexible appointment times',
+            'Medical support',
+            'Refreshments provided'
+          ],
+          color: 'from-teal-600 to-teal-800'
+        },
+        {
+          id: 'diabetes-check',
+          name: 'Diabetes Screening',
+          price: 'KES 3,500',
+          category: 'screening',
+          features: [
+            'HbA1c blood test',
+            'Fasting glucose test',
+            'Random glucose check',
+            'Home sample collection',
+            'Same-day results',
+            'Consultation included'
+          ],
+          color: 'from-red-600 to-red-800'
+        },
+        {
+          id: 'diabetes-management',
+          name: 'Diabetes Management',
+          price: 'KES 12,000/month',
+          category: 'chronic-care',
+          features: [
+            'Weekly glucose monitoring',
+            'Medication compliance tracking',
+            'Dietary guidance & meal plans',
+            'Foot care assessments',
+            'Monthly HbA1c tests',
+            'Endocrinologist consultations'
+          ],
+          color: 'from-rose-600 to-rose-800'
+        },
+        {
+          id: 'hypertension-check',
+          name: 'Hypertension Screening',
+          price: 'KES 2,500',
+          category: 'screening',
+          features: [
+            'Blood pressure monitoring',
+            'Cholesterol panel',
+            'ECG test',
+            'Kidney function tests',
+            'Risk assessment report',
+            'Lifestyle recommendations'
+          ],
+          color: 'from-amber-600 to-amber-800'
+        },
+        {
+          id: 'cardiac-monitoring',
+          name: 'Heart Health Monitoring',
+          price: 'KES 10,000/month',
+          category: 'chronic-care',
+          features: [
+            'Weekly BP checks at home',
+            'ECG monitoring',
+            'Cholesterol tracking',
+            'Medication management',
+            'Cardiologist consultation',
+            'Emergency alert system'
+          ],
+          color: 'from-pink-600 to-pink-800'
+        },
+        {
+          id: 'home-nursing',
+          name: 'Home Nursing Care',
+          price: 'KES 5,000',
+          category: 'other',
+          features: [
+            'Wound care & dressing',
+            'Medication administration',
+            'Vital signs monitoring',
+            'Post-operative care',
+            'IV therapy',
+            'Catheter care'
+          ],
+          color: 'from-purple-600 to-purple-800'
+        },
+        {
+          id: 'lab-tests',
+          name: 'Home Lab Tests',
+          price: 'From KES 2,500',
+          category: 'other',
+          features: [
+            'Blood sample collection at home',
+            'Kidney function tests',
+            'Complete blood count',
+            'Liver function tests',
+            'Fast results delivery',
+            'Digital report access'
+          ],
+          color: 'from-green-600 to-green-800'
+        },
+        {
+          id: 'health-monitoring',
+          name: 'General Health Monitoring',
+          price: 'KES 8,000/month',
+          category: 'other',
+          features: [
+            'Weekly nurse home visits',
+            'Blood pressure tracking',
+            'Weight & fluid monitoring',
+            'Medication compliance checks',
+            'Doctor consultation access',
+            'Personalized health reports'
+          ],
+          color: 'from-orange-600 to-orange-800'
+        },
+        {
+          id: 'consultation',
+          name: 'Virtual Doctor Consultation',
+          price: 'KES 3,000',
+          category: 'other',
+          features: [
+            'Video call with specialist',
+            'Same-day appointments',
+            'Prescription service',
+            'Medical certificate',
+            '30-minute session',
+            'Follow-up messaging included'
+          ],
+          color: 'from-indigo-600 to-indigo-800'
+        },
+        {
+          id: 'full-checkup',
+          name: 'Comprehensive Health Checkup',
+          price: 'KES 15,000',
+          category: 'screening',
+          features: [
+            'Full blood panel (30+ tests)',
+            'Diabetes & cholesterol screening',
+            'Kidney & liver function',
+            'Thyroid function tests',
+            'Cancer markers screening',
+            'Doctor review & health plan'
+          ],
+          color: 'from-cyan-600 to-cyan-800'
+        },
+        {
+          id: 'elderly-care',
+          name: 'Elderly Care Package',
+          price: 'KES 18,000/month',
+          category: 'chronic-care',
+          features: [
+            'Daily check-in calls',
+            'Twice-weekly home visits',
+            'Medication reminders & delivery',
+            'Fall risk assessments',
+            'Memory care support',
+            '24/7 family updates'
+          ],
+          color: 'from-violet-600 to-violet-800'
+        }
+      ];
+
+      const availableTimes = [
+        '7:00 AM', '9:00 AM', '11:00 AM', 
+        '1:00 PM', '3:00 PM', '5:00 PM'
+      ];
+
+      const HomePage = () => (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-teal-50">
+          {/* Hero Section */}
+          <div className="bg-gradient-to-r from-blue-600 to-teal-600 text-white">
+            <div className="max-w-6xl mx-auto px-6 py-16">
+              <div className="text-center">
+                <div className="w-16 h-16 mx-auto mb-4"><Heart /></div>
+                <h1 className="text-5xl font-bold mb-4">RenalCare Premium</h1>
+                <p className="text-xl mb-8 text-blue-100">
+                  Personalized dialysis care that puts you first
+                </p>
+                <button 
+                  onClick={() => setCurrentView('booking')}
+                  className="bg-white text-blue-600 px-8 py-4 rounded-full font-semibold text-lg hover:shadow-xl transition-all transform hover:scale-105"
+                >
+                  Book Your Session
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Why Choose Us */}
+          <div className="max-w-6xl mx-auto px-6 py-16">
+            <h2 className="text-3xl font-bold text-center mb-12 text-gray-800">
+              Why Patients Choose RenalCare
+            </h2>
+            <div className="grid md:grid-cols-3 gap-8">
+              <div className="bg-white p-8 rounded-xl shadow-lg text-center">
+                <div className="w-12 h-12 mx-auto mb-4 text-yellow-500"><Star /></div>
+                <h3 className="text-xl font-bold mb-3">Premium Experience</h3>
+                <p className="text-gray-600">
+                  Boutique care with dedicated nurses who know you by name
+                </p>
+              </div>
+              <div className="bg-white p-8 rounded-xl shadow-lg text-center">
+                <div className="w-12 h-12 mx-auto mb-4 text-blue-600"><Shield /></div>
+                <h3 className="text-xl font-bold mb-3">Expert Care</h3>
+                <p className="text-gray-600">
+                  Highly trained staff with nephrologist oversight
+                </p>
+              </div>
+              <div className="bg-white p-8 rounded-xl shadow-lg text-center">
+                <div className="w-12 h-12 mx-auto mb-4 text-teal-600"><Clock /></div>
+                <h3 className="text-xl font-bold mb-3">Your Schedule</h3>
+                <p className="text-gray-600">
+                  Flexible hours and guaranteed appointment times
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Service Tiers Preview */}
+          <div className="max-w-6xl mx-auto px-6 py-16">
+            <h2 className="text-3xl font-bold text-center mb-4 text-gray-800">
+              Our Services
+            </h2>
+            <p className="text-center text-gray-600 mb-8 max-w-2xl mx-auto">
+              From dialysis to home nursing and virtual consultations - comprehensive healthcare delivered to you
+            </p>
+            
+            {/* Category Tabs */}
+            <div className="flex justify-center gap-3 mb-10">
+              <button
+                onClick={() => setSelectedCategory('all')}
+                className={`px-6 py-3 rounded-full font-semibold transition-all ${
+                  selectedCategory === 'all'
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                All Services
+              </button>
+              <button
+                onClick={() => setSelectedCategory('dialysis')}
+                className={`px-6 py-3 rounded-full font-semibold transition-all ${
+                  selectedCategory === 'dialysis'
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                Dialysis
+              </button>
+              <button
+                onClick={() => setSelectedCategory('other')}
+                className={`px-6 py-3 rounded-full font-semibold transition-all ${
+                  selectedCategory === 'other'
+                    ? 'bg-blue-600 text-white shadow-lg'
+                    : 'bg-white text-gray-700 hover:bg-gray-100'
+                }`}
+              >
+                Other Services
+              </button>
+            </div>
+            
+            <div className="grid md:grid-cols-3 gap-6">
+              {services
+                .filter(service => selectedCategory === 'all' || service.category === selectedCategory)
+                .map(service => (
+                <div key={service.id} className="bg-white rounded-xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow">
+                  <div className={`bg-gradient-to-r ${service.color} text-white p-6`}>
+                    <h3 className="text-xl font-bold">{service.name}</h3>
+                    <p className="text-2xl font-bold mt-2">{service.price}</p>
+                    {service.price.includes('/') && <p className="text-xs text-blue-100">per {service.price.split('/')[1]}</p>}
+                    {!service.price.includes('/') && !service.price.includes('From') && <p className="text-xs text-blue-100">per session</p>}
+                  </div>
+                  <div className="p-6">
+                    <ul className="space-y-2">
+                      {service.features.slice(0, 4).map((feature, idx) => (
+                        <li key={idx} className="flex items-start text-sm">
+                          <div className="w-4 h-4 text-green-500 mr-2 flex-shrink-0 mt-0.5"><CheckCircle /></div>
+                          <span className="text-gray-700">{feature}</span>
+                        </li>
+                      ))}
+                      {service.features.length > 4 && (
+                        <li className="text-sm text-gray-500 italic">
+                          +{service.features.length - 4} more features
+                        </li>
+                      )}
+                    </ul>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Location */}
+          <div className="bg-gray-50 py-16">
+            <div className="max-w-6xl mx-auto px-6">
+              <div className="bg-white rounded-xl shadow-lg p-8">
+                <div className="grid md:grid-cols-2 gap-8">
+                  <div>
+                    <h3 className="text-2xl font-bold mb-4 flex items-center">
+                      <div className="w-6 h-6 mr-2 text-blue-600"><MapPin /></div>
+                      Find Us
+                    </h3>
+                    <p className="text-gray-600 mb-4">
+                      Conveniently located in Nairobi, our modern facility offers easy access and ample parking.
+                    </p>
+                    <div className="space-y-3">
+                      <div className="flex items-center text-gray-700">
+                        <div className="w-5 h-5 mr-3 text-teal-600"><Phone /></div>
+                        <span>+254 700 123 456</span>
+                      </div>
+                      <div className="flex items-center text-gray-700">
+                        <div className="w-5 h-5 mr-3 text-teal-600"><Mail /></div>
+                        <span>care@renalcare.co.ke</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-gradient-to-br from-blue-100 to-teal-100 rounded-lg p-8 flex items-center justify-center">
+                    <div className="text-center">
+                      <div className="w-20 h-20 mx-auto text-blue-600 mb-4"><MapPin /></div>
+                      <p className="text-gray-700 font-medium">Premium Dialysis Centre</p>
+                      <p className="text-gray-600 text-sm">Nairobi, Kenya</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+
+      const BookingPage = () => (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-teal-50">
+          <div className="max-w-4xl mx-auto px-6 py-12">
+            {/* Header */}
+            <div className="text-center mb-12">
+              <button 
+                onClick={() => setCurrentView('home')}
+                className="text-blue-600 hover:text-blue-800 mb-4 inline-flex items-center"
+              >
+                ← Back to Home
+              </button>
+              <h1 className="text-4xl font-bold text-gray-800 mb-2">Book Your Session</h1>
+              <p className="text-gray-600">Select your preferred service and time</p>
+            </div>
+
+            {/* Service Selection */}
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold mb-6 text-gray-800">Choose Your Service</h2>
+              
+              {/* Service Categories */}
+              <div className="space-y-8">
+                {/* Dialysis */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 text-gray-700">Dialysis Care</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    {services.filter(s => s.category === 'dialysis').map(service => (
+                      <div 
+                        key={service.id}
+                        onClick={() => setSelectedService(service.id)}
+                        className={`bg-white rounded-xl shadow-lg overflow-hidden cursor-pointer transition-all transform hover:scale-105 ${
+                          selectedService === service.id ? 'ring-4 ring-blue-500' : ''
+                        }`}
+                      >
+                        <div className={`bg-gradient-to-r ${service.color} text-white p-4`}>
+                          <h3 className="text-lg font-bold">{service.name}</h3>
+                          <p className="text-2xl font-bold mt-1">{service.price}</p>
+                        </div>
+                        <div className="p-4">
+                          <ul className="space-y-1.5">
+                            {service.features.slice(0, 3).map((feature, idx) => (
+                              <li key={idx} className="flex items-start text-xs">
+                                <div className="w-3 h-3 text-green-500 mr-1.5 flex-shrink-0 mt-0.5"><CheckCircle /></div>
+                                <span className="text-gray-700">{feature}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Screenings */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 text-gray-700">Health Screenings</h3>
+                  <div className="grid md:grid-cols-4 gap-3">
+                    {services.filter(s => s.category === 'screening').map(service => (
+                      <div 
+                        key={service.id}
+                        onClick={() => setSelectedService(service.id)}
+                        className={`bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-all hover:shadow-lg ${
+                          selectedService === service.id ? 'ring-4 ring-blue-500' : ''
+                        }`}
+                      >
+                        <div className={`bg-gradient-to-r ${service.color} text-white p-3`}>
+                          <h3 className="text-sm font-bold">{service.name}</h3>
+                          <p className="text-lg font-bold mt-1">{service.price}</p>
+                        </div>
+                        <div className="p-3">
+                          <p className="text-xs text-gray-600">{service.features[0]}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Chronic Care */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 text-gray-700">Chronic Condition Management</h3>
+                  <div className="grid md:grid-cols-4 gap-3">
+                    {services.filter(s => s.category === 'chronic-care').map(service => (
+                      <div 
+                        key={service.id}
+                        onClick={() => setSelectedService(service.id)}
+                        className={`bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-all hover:shadow-lg ${
+                          selectedService === service.id ? 'ring-4 ring-blue-500' : ''
+                        }`}
+                      >
+                        <div className={`bg-gradient-to-r ${service.color} text-white p-3`}>
+                          <h3 className="text-sm font-bold">{service.name}</h3>
+                          <p className="text-lg font-bold mt-1">{service.price}</p>
+                        </div>
+                        <div className="p-3">
+                          <p className="text-xs text-gray-600">{service.features[0]}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Other Services */}
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 text-gray-700">Additional Services</h3>
+                  <div className="grid md:grid-cols-4 gap-3">
+                    {services.filter(s => s.category === 'other').map(service => (
+                      <div 
+                        key={service.id}
+                        onClick={() => setSelectedService(service.id)}
+                        className={`bg-white rounded-lg shadow-md overflow-hidden cursor-pointer transition-all hover:shadow-lg ${
+                          selectedService === service.id ? 'ring-4 ring-blue-500' : ''
+                        }`}
+                      >
+                        <div className={`bg-gradient-to-r ${service.color} text-white p-3`}>
+                          <h3 className="text-sm font-bold">{service.name}</h3>
+                          <p className="text-lg font-bold mt-1">{service.price}</p>
+                        </div>
+                        <div className="p-3">
+                          <p className="text-xs text-gray-600">{service.features[0]}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Date & Time Selection */}
+            {selectedService && (
+              <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+                  <div className="w-6 h-6 mr-2 text-blue-600"><Calendar /></div>
+                  Select Date & Time
+                </h2>
+                
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Preferred Date
+                  </label>
+                  <input 
+                    type="date"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    value={bookingData.date}
+                    onChange={(e) => setBookingData({...bookingData, date: e.target.value})}
+                    min={new Date().toISOString().split('T')[0]}
+                  />
+                </div>
+
+                <div className="mb-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Available Time Slots
+                  </label>
+                  <div className="grid grid-cols-3 gap-3">
+                    {availableTimes.map(time => (
+                      <button
+                        key={time}
+                        onClick={() => setBookingData({...bookingData, time})}
+                        className={`py-3 px-4 rounded-lg font-medium transition-all ${
+                          bookingData.time === time
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        }`}
+                      >
+                        {time}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Patient Information */}
+            {selectedService && bookingData.date && bookingData.time && (
+              <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
+                <h2 className="text-2xl font-bold mb-6 text-gray-800 flex items-center">
+                  <div className="w-6 h-6 mr-2 text-blue-600"><User /></div>
+                  Your Information
+                </h2>
+                
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Full Name
+                    </label>
+                    <input 
+                      type="text"
+                      placeholder="John Doe"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Phone Number
+                    </label>
+                    <input 
+                      type="tel"
+                      placeholder="+254 700 000 000"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Email Address
+                    </label>
+                    <input 
+                      type="email"
+                      placeholder="john@example.com"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Insurance Provider (Optional)
+                    </label>
+                    <input 
+                      type="text"
+                      placeholder="NHIF, AAR, etc."
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-6">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Special Requirements (Optional)
+                  </label>
+                  <textarea 
+                    rows="3"
+                    placeholder="Any special needs or preferences we should know about?"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                </div>
+
+                <button 
+                  onClick={() => setCurrentView('confirmation')}
+                  className="w-full mt-8 bg-gradient-to-r from-blue-600 to-teal-600 text-white py-4 rounded-lg font-bold text-lg hover:shadow-xl transition-all transform hover:scale-105"
+                >
+                  Confirm Booking
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      );
+
+      const ConfirmationPage = () => (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-teal-50 flex items-center justify-center px-6">
+          <div className="max-w-2xl w-full">
+            <div className="bg-white rounded-2xl shadow-2xl p-12 text-center">
+              <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                <div className="w-12 h-12 text-green-600"><CheckCircle /></div>
+              </div>
+              
+              <h1 className="text-4xl font-bold text-gray-800 mb-4">
+                Booking Confirmed!
+              </h1>
+              
+              <p className="text-xl text-gray-600 mb-8">
+                Your dialysis session has been scheduled
+              </p>
+
+              <div className="bg-gradient-to-r from-blue-50 to-teal-50 rounded-xl p-8 mb-8">
+                <div className="grid grid-cols-2 gap-6 text-left">
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Service</p>
+                    <p className="font-bold text-gray-800">
+                      {services.find(s => s.id === selectedService)?.name}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Price</p>
+                    <p className="font-bold text-gray-800">
+                      {services.find(s => s.id === selectedService)?.price}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Date</p>
+                    <p className="font-bold text-gray-800">{bookingData.date}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-600 mb-1">Time</p>
+                    <p className="font-bold text-gray-800">{bookingData.time}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-blue-50 border-l-4 border-blue-600 p-6 mb-8 text-left">
+                <h3 className="font-bold text-gray-800 mb-2">What's Next?</h3>
+                <ul className="text-sm text-gray-700 space-y-2">
+                  <li>✓ You'll receive a confirmation SMS and email shortly</li>
+                  <li>✓ Our care team will call you within 24 hours</li>
+                  <li>✓ For Premium Care: Pickup details will be coordinated</li>
+                  <li>✓ Feel free to reach us anytime on WhatsApp</li>
+                </ul>
+              </div>
+
+              <div className="flex gap-4">
+                <button 
+                  onClick={() => {
+                    setCurrentView('home');
+                    setSelectedService(null);
+                    setBookingData({date: '', time: '', service: ''});
+                  }}
+                  className="flex-1 bg-gradient-to-r from-blue-600 to-teal-600 text-white py-4 rounded-lg font-bold hover:shadow-xl transition-all"
+                >
+                  Back to Home
+                </button>
+                <button 
+                  className="flex-1 border-2 border-blue-600 text-blue-600 py-4 rounded-lg font-bold hover:bg-blue-50 transition-all"
+                >
+                  Add to Calendar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+
+      return (
+        <div>
+          {currentView === 'home' && <HomePage />}
+          {currentView === 'booking' && <BookingPage />}
+          {currentView === 'confirmation' && <ConfirmationPage />}
+        </div>
+      );
+    };
+
+    ReactDOM.render(<DialysisBookingApp />, document.getElementById('root'));
+  </script>
+</body>
+</html>
