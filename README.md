@@ -2,8 +2,7 @@
 
 A complete healthcare booking platform offering dialysis, chronic disease management, health screenings, and home care services for the Kenyan market.
 
-## 🌐 Live Demo
-Visit: `https://YOUR-USERNAME.github.io/renalcare-app`
+
 
 ## 📱 Pages Included
 
@@ -41,37 +40,7 @@ Visit: `https://YOUR-USERNAME.github.io/renalcare-app`
 - **Insurance** - NHIF, AAR, Britam, Jubilee, Madison, APA
 - **Bank Transfer** - Direct bank payments
 
-## 🚀 Quick Start
-
-### View Locally
-1. Download all files
-2. Open `index.html` in your browser
-3. Navigate through the pages
-
-### Deploy to GitHub Pages
-
-1. **Create GitHub Repository**
-   - Go to https://github.com/new
-   - Name: `renalcare-app`
-   - Make it PUBLIC
-   - Click "Create repository"
-
-2. **Upload Files**
-   - Click "uploading an existing file"
-   - Drag all HTML files (index.html, login.html, app.html, payment.html)
-   - Add README.md and .gitignore
-   - Commit changes
-
-3. **Enable GitHub Pages**
-   - Go to Settings → Pages
-   - Source: Deploy from branch
-   - Branch: main
-   - Folder: / (root)
-   - Click Save
-
-4. **Access Your Site**
-   - Wait 2-3 minutes
-   - Visit: `https://YOUR-USERNAME.github.io/renalcare-app`
+`
 
 ## 🛠️ Technology Stack
 
